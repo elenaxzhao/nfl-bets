@@ -1,3 +1,1 @@
 # nfl-bets
-
-# hello
