@@ -6,3 +6,5 @@ seaborn
 statsmodels
 numpy
 scipy
+ipykernel
+jupyter
