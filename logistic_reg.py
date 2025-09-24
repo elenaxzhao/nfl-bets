@@ -7,4 +7,8 @@ from matplotlib.offsetbox import AnnotationBbox, OffsetImage
 
 data = nfl.import_pbp_data([2024])
 
-data.shape()
+print(data.shape)
+
+print(data.head())
+
+print(data.columns)
