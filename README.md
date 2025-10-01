@@ -14,7 +14,9 @@ Our research focuses on **pre-game actionable factors** like injuries, weather, 
 
 ### Bayesian Network Model
 - **Approach**: Probabilistic graphical model using injury, weather, and temporal factors
-- **Performance**: 75% accuracy on test data
+- **Standard Performance**: 75% accuracy on test data
+- **Experimental Results**: 47% accuracy when trained on first half of 2024, tested on second half (demonstrates overfitting)
+- **Key Finding**: 34.9% overfitting gap highlights need for more training data
 - **Documentation**: See [models/bayes_net/README.md](models/bayes_net/README.md) for detailed usage
 
 ### Poisson ELO Model
@@ -160,8 +162,7 @@ nfl-bets/
 │   ├── bayes_net/
 │   │   ├── nfl_bayesian_network.py      # Main Bayesian network
 │   │   ├── correlation_tests.py         # Correlation analysis
-│   │   ├── cli_predictor.py            # Command line interface
-│   │   └── simple_predictor.py         # Interactive interface
+│   │   └── cli_predictor.py            # Command line interface
 │   ├── logistic/
 │   │   ├── logistic_regression.py      # Main logistic regression model
 │   │   └── example_usage.py            # Usage examples
