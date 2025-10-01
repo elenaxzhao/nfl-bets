@@ -181,9 +181,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Acknowledgments
 
 - [nflreadpy](https://github.com/nflverse/nflreadpy) for NFL data access
-- [nflverse](https://www.nflverse.com/) for comprehensive NFL data
-- Academic sports analytics research for methodological inspiration
-- Open source machine learning community for tools and frameworks
 
 ---
 
