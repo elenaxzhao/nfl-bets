@@ -33,24 +33,59 @@ Game Outcome (Home Win)
 
 ## Performance
 
+### Standard Training Results
 - **Accuracy**: 75% on test data (81/108 correct predictions)
 - **Training Data**: 544 games from 2023-2024 seasons
 - **Key Predictor**: Away team key injuries (0.087 correlation, p=0.042)
 
+### Experimental Results: First Half vs Second Half 2024
+
+**Training Setup:**
+- **Training Data**: 138 games from Weeks 1-9, 2024
+- **Test Data**: 134 games from Weeks 10-18, 2024
+
+**Results:**
+- **Training Accuracy**: 81.9% (113/138 correct)
+- **Test Accuracy**: 47.0% (63/134 correct)
+- **Overfitting Gap**: 34.9% difference
+- **Baseline**: 53.0% home win rate in test period
+
+**Key Findings:**
+1. **Severe Overfitting**: Model memorized first-half patterns but failed to generalize
+2. **Week-by-Week Performance**: 
+   - Best: Week 15 (68.8%), Week 10-11 (57.1%)
+   - Worst: Week 16 (18.8%), Week 14 (30.8%)
+3. **Insufficient Training Data**: 138 games too small for complex Bayesian network
+4. **Seasonal Dynamics**: NFL patterns change significantly throughout the season
+
+**Research Implications:**
+- Demonstrates importance of sufficient training data
+- Shows need for regularization to prevent overfitting
+- Highlights seasonal pattern changes in NFL
+- Validates need for ensemble approaches or simpler models
+
 ## Usage
 
 ### Training the Model
+
+#### Standard Training (All Available Data)
 ```bash
 python nfl_bayesian_network.py
 ```
+
+#### Experimental Training (First Half vs Second Half 2024)
+```bash
+python train_first_half_test_second_half_2024.py
+```
+This trains on Weeks 1-9 of 2024 and tests on Weeks 10-18, demonstrating overfitting issues.
 
 ### Making Predictions
 ```bash
 # Command line interface
 python cli_predictor.py KC BUF 8 --home-injuries 1 --away-injuries 4 --wind 10
 
-# Interactive mode
-python simple_predictor.py
+# Interactive mode (use cli_predictor.py with arguments)
+python cli_predictor.py KC BUF 8 --home-injuries 1 --away-injuries 4 --wind 10
 ```
 
 ### Python Integration
@@ -154,7 +189,7 @@ Based on analysis of 544 NFL games, the most predictive factors are:
 - `nfl_bayesian_network.py` - Main Bayesian network implementation
 - `correlation_tests.py` - Comprehensive correlation analysis
 - `cli_predictor.py` - Command line prediction interface
-- `simple_predictor.py` - Interactive prediction interface
+- `train_first_half_test_second_half_2024.py` - Experimental training script (overfitting analysis)
 
 ## Running Correlation Analysis
 
