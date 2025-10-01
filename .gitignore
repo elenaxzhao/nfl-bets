@@ -1,3 +1,18 @@
-venv/
 .venv/
 **/__pycache__/
+
+# Output files
+*.csv
+*.html
+*.png
+*.pkl
+*.txt
+!requirements.txt
+
+# Model files
+nfl_bayesian_model.pkl
+nfl_correlation_*.html
+nfl_correlation_*.csv
+correlation_summary.txt
+simple_nfl_correlations.csv
+nfl_predictions.csv
