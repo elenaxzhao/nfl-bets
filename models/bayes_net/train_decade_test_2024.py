@@ -1,5 +1,6 @@
 """
-Train Bayesian Network on 2023 data and test on 2024 data
+Train Bayesian Network on a decade of data (2013-2023) and test on 2024 season
+This addresses the data insufficiency issues identified in previous experiments
 """
 
 import sys
@@ -7,50 +8,46 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from nfl_bayesian_network import NFLBayesianNetwork, GameFeatures, PredictionResult
-import pandas as pd
-import numpy as np
 
-def train_first_half_test_second_half_2024():
-    """Train on first half of 2024 data and test on second half of 2024 data"""
-    print("NFL Bayesian Network - Train First Half 2024, Test Second Half 2024")
+def train_decade_test_2024():
+    """Train on 2013-2023 data and test on 2024 data"""
+    print("NFL Bayesian Network - Train 2013-2023, Test 2024")
     print("=" * 60)
     
     # Create network instance
     bn = NFLBayesianNetwork()
     
-    # Load 2024 data
-    print("\n1. Loading 2024 season data...")
-    full_2024_data = bn.load_training_data(seasons=[2024])
-    print(f"Loaded {len(full_2024_data)} total games from 2024")
+    # Load training data (2013-2023)
+    print("\n1. Loading training data (2013-2023)...")
+    training_data = bn.load_training_data(seasons=list(range(2013, 2024)))
+    print(f"Loaded {len(training_data)} games from 2013-2023")
     
-    # Split into first half (Weeks 1-9) and second half (Weeks 10-18)
-    training_data = full_2024_data[full_2024_data['week'] <= 9].copy()
-    test_data = full_2024_data[full_2024_data['week'] >= 10].copy()
-    
-    print(f"Training data (Weeks 1-9): {len(training_data)} games")
-    print(f"Test data (Weeks 10-18): {len(test_data)} games")
+    # Load test data (2024)
+    print("\n2. Loading test data (2024)...")
+    test_data = bn.load_training_data(seasons=[2024])
+    print(f"Loaded {len(test_data)} games from 2024")
     
     # Train the model
-    print("\n2. Training Bayesian Network on first half of 2024...")
+    print("\n3. Training Bayesian Network on decade of data...")
     bn.train(training_data)
     
-    # Test the model on second half of 2024 data
-    print("\n3. Testing model on second half of 2024...")
+    # Test the model on 2024 data
+    print("\n4. Testing model on 2024 season...")
     evaluation = bn.evaluate_model(test_data)
     
     print(f"\n" + "="*60)
-    print("RESULTS - FIRST HALF 2024 TRAINED, SECOND HALF 2024 TESTED")
+    print("RESULTS - DECADE TRAINED (2013-2023), 2024 TESTED")
     print("="*60)
-    print(f"Training Data (Weeks 1-9, 2024): {len(training_data)} games")
-    print(f"Test Data (Weeks 10-18, 2024): {len(test_data)} games")
-    print(f"Accuracy on second half 2024: {evaluation['accuracy']:.3f} ({evaluation['accuracy']*100:.1f}%)")
+    print(f"Training Data (2013-2023): {len(training_data)} games")
+    print(f"Test Data (2024): {len(test_data)} games")
+    print(f"Accuracy on 2024: {evaluation['accuracy']:.3f} ({evaluation['accuracy']*100:.1f}%)")
     print(f"Correct Predictions: {evaluation['correct_predictions']}/{evaluation['total_predictions']}")
     
     # Show some example predictions
-    print(f"\n4. Example second half 2024 predictions:")
+    print(f"\n5. Example 2024 predictions:")
     print("-" * 40)
     
-    # Show first 5 test games (from second half)
+    # Show first 5 test games
     for i, (_, game) in enumerate(test_data.head(5).iterrows()):
         features = GameFeatures(
             home_key_injuries=game['home_key_injuries'],
@@ -77,12 +74,12 @@ def train_first_half_test_second_half_2024():
         print()
     
     # Save the trained model
-    print("\n5. Saving trained model...")
-    bn.save_model('nfl_bayesian_model_first_half_2024.pkl')
-    print("Model saved as 'nfl_bayesian_model_first_half_2024.pkl'")
+    print("6. Saving trained model...")
+    bn.save_model('nfl_bayesian_model_decade_2013_2023.pkl')
+    print("Model saved as 'nfl_bayesian_model_decade_2013_2023.pkl'")
     
     # Additional analysis
-    print(f"\n6. Additional Analysis:")
+    print(f"\n7. Additional Analysis:")
     print("-" * 30)
     
     # Analyze by week
@@ -104,23 +101,33 @@ def train_first_half_test_second_half_2024():
     
     # Accuracy by week
     weekly_accuracy = test_data.groupby('week')['correct'].mean().sort_index()
-    print("Accuracy by Week:")
+    print("Accuracy by Week (2024):")
     for week, acc in weekly_accuracy.items():
         print(f"  Week {week:2d}: {acc:.3f} ({acc*100:.1f}%)")
     
     # Overall home team performance
     home_win_rate = test_data['home_win'].mean()
     training_home_win_rate = training_data['home_win'].mean()
-    print(f"\nTraining Data (Weeks 1-9) Home Win Rate: {training_home_win_rate:.3f} ({training_home_win_rate*100:.1f}%)")
-    print(f"Test Data (Weeks 10-18) Home Win Rate: {home_win_rate:.3f} ({home_win_rate*100:.1f}%)")
+    print(f"\nTraining Data (2013-2023) Home Win Rate: {training_home_win_rate:.3f} ({training_home_win_rate*100:.1f}%)")
+    print(f"Test Data (2024) Home Win Rate: {home_win_rate:.3f} ({home_win_rate*100:.1f}%)")
     
     # Compare training vs test performance
-    training_eval = bn.evaluate_model(training_data)
-    print(f"\nTraining Accuracy (Weeks 1-9): {training_eval['accuracy']:.3f} ({training_eval['accuracy']*100:.1f}%)")
-    print(f"Test Accuracy (Weeks 10-18): {evaluation['accuracy']:.3f} ({evaluation['accuracy']*100:.1f}%)")
+    training_eval = bn.evaluate_model(training_data.tail(1000))  # Sample last 1000 games to avoid memory issues
+    print(f"\nTraining Accuracy (Sample of 2013-2023): {training_eval['accuracy']:.3f} ({training_eval['accuracy']*100:.1f}%)")
+    print(f"Test Accuracy (2024): {evaluation['accuracy']:.3f} ({evaluation['accuracy']*100:.1f}%)")
     print(f"Overfitting Check: {training_eval['accuracy'] - evaluation['accuracy']:.3f} difference")
+    
+    # Data quality analysis
+    print(f"\n8. Data Quality Analysis:")
+    print("-" * 30)
+    print(f"Training data spans: {training_data['season'].min()} - {training_data['season'].max()}")
+    print(f"Average games per season: {len(training_data) / (training_data['season'].max() - training_data['season'].min() + 1):.1f}")
+    print(f"Training data injury coverage:")
+    print(f"  Games with injury data: {(training_data['home_key_injuries'] + training_data['away_key_injuries'] > 0).mean():.3f}")
+    print(f"  Average home key injuries: {training_data['home_key_injuries'].mean():.2f}")
+    print(f"  Average away key injuries: {training_data['away_key_injuries'].mean():.2f}")
     
     return bn, evaluation
 
 if __name__ == "__main__":
-    model, results = train_first_half_test_second_half_2024()
+    model, results = train_decade_test_2024()
