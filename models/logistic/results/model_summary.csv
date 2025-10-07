@@ -1,0 +1,2 @@
+train_accuracy,train_log_loss,train_brier_score,test_accuracy,test_log_loss,test_brier_score,test_auc,train_seasons,test_season,n_features,n_train_games,n_test_games
+0.6603415559772297,0.6260188090596993,0.21826263334016224,0.6580882352941176,0.629710453958297,0.21950057050884814,0.705946239478686,"[2022, 2023]",2024,25,527,272
