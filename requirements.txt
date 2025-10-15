@@ -8,3 +8,7 @@ numpy
 scipy
 ipykernel
 jupyter
+torch>=2.0.0
+pyyaml
+pyarrow
+fastparquet
