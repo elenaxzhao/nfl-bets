@@ -10,6 +10,10 @@ venv/
 *.txt
 !requirements.txt
 
+# Large data files
+*.parquet
+**/data/*.parquet
+
 # Model files
 nfl_bayesian_model.pkl
 nfl_correlation_*.html
