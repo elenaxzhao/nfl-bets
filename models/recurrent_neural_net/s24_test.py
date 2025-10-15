@@ -24,7 +24,7 @@ warnings.filterwarnings('ignore')
 from data_loader import NFLDataLoader, TimeAwareSplitter
 from feature_engineering import FeatureEngineer
 from sequence_builder import SequenceBuilder, RecencyWeightCalculator
-from model import NFLGamePredictor, create_model_from_config
+from rnn_model import NFLGamePredictor, create_model_from_config
 from trainer import Trainer, TrainingConfig
 from metrics import MetricsCalculator, ResultsLogger, Calibrator
 
@@ -348,9 +348,9 @@ def predict_week(
 
 def main():
     """Run 2024 season evaluation."""
-    print("\n" + "🏈"*35)
+    print("\n" + "="*35)
     print("RNN MODEL - 2024 SEASON EVALUATION")
-    print("🏈"*35 + "\n")
+    print("="*35 + "\n")
     
     # Load config
     print("Loading configuration...")
