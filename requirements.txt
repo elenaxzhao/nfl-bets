@@ -7,4 +7,12 @@ statsmodels
 numpy
 scipy
 ipykernel
+<<<<<<< HEAD
 jupyter
+=======
+jupyter
+torch>=2.0.0
+pyyaml
+pyarrow
+fastparquet
+>>>>>>> rnn

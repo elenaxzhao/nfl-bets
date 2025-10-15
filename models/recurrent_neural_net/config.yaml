@@ -1,0 +1,122 @@
+# RNN Model Configuration for NFL Game Prediction
+# ================================================
+
+# Data Configuration
+data:
+  seasons: [2019, 2020, 2021, 2022, 2023, 2024]
+  cache_dir: "data/"
+  use_cache: true
+  
+# Sequence Configuration
+sequence:
+  max_history_length: 10  # K games per team
+  min_history_length: 1
+  pad_value: 0.0
+  
+# Feature Configuration
+features:
+  # Per-game features (computed from play-by-play)
+  use_epa: true
+  use_success_rate: true
+  use_turnover_rate: true
+  use_pace: true
+  use_drives: true
+  use_elo: true
+  
+  # Matchup features
+  use_home_away_flag: true
+  use_divisional_flag: true
+  use_weather: false  # Set to true if weather data available
+  
+  # Computed as home_minus_away diffs
+  compute_matchup_diffs: true
+
+# Model Architecture
+model:
+  # Encoder type: 'gru' or 'lstm'
+  encoder_type: "gru"
+  
+  # Dimensions
+  team_embedding_dim: 32
+  feature_dim: 16  # Will be computed from feature configuration
+  hidden_dim: 128
+  num_layers: 2
+  dropout: 0.3
+  bidirectional: false
+  
+  # MLP heads
+  win_head_hidden: [64, 32]
+  score_head_hidden: [64, 32]
+  
+# Loss Configuration
+loss:
+  # Loss weights
+  lambda_bce: 1.0  # Win probability loss weight
+  lambda_score: 0.5  # Score prediction loss weight
+  
+  # Score loss type: 'mae', 'mse', 'poisson', or 'negative_binomial'
+  score_loss_type: "mae"
+  
+# Training Configuration
+training:
+  # Optimization
+  learning_rate: 0.001
+  batch_size: 32
+  max_epochs: 100
+  
+  # Regularization
+  weight_decay: 0.0001
+  gradient_clip_value: 1.0
+  
+  # Early stopping
+  early_stopping_patience: 10
+  early_stopping_metric: "val_log_loss"  # Metric to monitor
+  early_stopping_mode: "min"  # 'min' or 'max'
+  
+  # Mixed precision
+  use_amp: true
+  
+  # Recency weighting
+  recency_half_life: 8.0  # Games (exponential decay)
+  apply_recency_as: "sample_weights"  # 'sample_weights' or 'attention_weights'
+  
+  # Reproducibility
+  seed: 42
+  deterministic: true
+  
+  # Validation split (for early stopping)
+  val_split: 0.15  # Fraction of training data for validation
+  
+# Evaluation Configuration
+evaluation:
+  # Metrics to compute
+  compute_accuracy: true
+  compute_log_loss: true
+  compute_brier_score: true
+  compute_mae: true
+  compute_rmse: true
+  compute_spread_mae: true
+  
+  # Calibration
+  calibration_bins: 10
+  use_calibration: false  # Set to true to apply Platt/isotonic calibration
+  calibration_method: "isotonic"  # 'platt' or 'isotonic'
+  
+# Rolling Origin Configuration
+rolling_origin:
+  # Train on weeks ≤ w-1 across prior seasons
+  # Test on week w
+  test_season: 2024
+  test_weeks: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+  
+# Device Configuration
+device: "cuda"  # 'cuda', 'mps', or 'cpu' (auto-detected if available)
+
+# Logging
+logging:
+  log_level: "INFO"
+  save_predictions: true
+  save_metrics: true
+  results_dir: "results/"
+  checkpoint_dir: "checkpoints/"
+
